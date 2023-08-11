@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'appAlert',
     'rest_framework',
-    'fcm_django'
+    'fcm_django',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'fcm_nonitication.urls'
@@ -133,3 +135,8 @@ FCM_DJANGO_SETTINGS = {
 
 from .local import *
 
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",  # React default dev server
+#     "https://your-react-app.com",
+# ]
+CORS_ALLOW_ALL_ORIGINS = True

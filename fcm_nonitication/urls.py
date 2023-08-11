@@ -24,5 +24,6 @@ router.register('devices', FCMDeviceAuthorizedViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('',include('appAlert.urls'))
+    path('',include('appAlert.urls')),
+    path('api-auth/', include('rest_framework.urls')),
 ]
