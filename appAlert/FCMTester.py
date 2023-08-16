@@ -11,12 +11,17 @@ def test_send(request):
     username='admin'
     user, created = User.objects.get_or_create(username=username)
     model_instance, _ = FCMToken_Testing.objects.get_or_create(user=user)
-   # Assuming you have at least one instance for testing purposes
+
+    # Assuming you have at least one instance for testing purposes
+    if not model_instance.tokens:
+        return JsonResponse({"detail": "No tokens."}, status=status.HTTP_400_BAD_REQUEST)
+    
     model_instance.send_notification(
         'pharmaco-net.org',
         'Simulation Completed. You can view the results now.',
         'https://imgtr.ee/images/2023/08/15/44d1375ec2f1260a80f1d56b88a346be.jpeg'
     )
+    
     return JsonResponse({"detail": "Notification sent successfully."})
 
 @api_view(['POST'])
@@ -31,10 +36,8 @@ def register_token(request):
     username = request.data.get('username')
     user, created = User.objects.get_or_create(username=username)
     model_instance, _ = FCMToken_Testing.objects.get_or_create(user=user)
-    if(token in model_instance.tokens):
-        return Response({"detail": "Already registered."}, status=status.HTTP_201_CREATED)
-    else:
-        model_instance.subscribe(token, True)
+    
+    model_instance.unique_subscribe(token, True)
 
     return Response({"detail": "Token registered successfully."}, status=status.HTTP_201_CREATED)
 
