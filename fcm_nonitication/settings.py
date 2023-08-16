@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from typing import Generic  
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -140,3 +141,17 @@ from .local import *
 #     "https://your-react-app.com",
 # ]
 CORS_ALLOW_ALL_ORIGINS = True
+
+# CLUTCH FOR TYPING IN PYTHON
+from django.db.migrations.state import ModelState
+_original = ModelState.render
+
+def _new(self : ModelState, apps):
+    self.bases = tuple(
+        item
+        for item in self.bases
+        if isinstance(item, str) or not issubclass(item, Generic)  # type: ignore
+    )  # type: ignore
+    return _original(self, apps)
+
+ModelState.render = _new  # type: ignore
