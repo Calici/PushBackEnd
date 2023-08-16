@@ -1,8 +1,11 @@
 from django.db import models
 from typing import Generic, TypeVar
-
+from firebase_admin import credentials, messaging
+from fcm_nonitication import settings
+import firebase_admin
 
 T = TypeVar('T', bound=models.Model)
+
 class UserTokens(models.Model, Generic[T]):
     user: models.OneToOneField = models.OneToOneField(
         'self', 
@@ -14,9 +17,7 @@ class UserTokens(models.Model, Generic[T]):
     name: models.CharField = models.CharField(max_length=100, default="unauthenticated")
     tokens = models.JSONField(default=list)
 
-    from firebase_admin import credentials, messaging
-    from fcm_nonitication import settings
-    import firebase_admin
+
     cred = credentials.Certificate(settings.cred)
     app = firebase_admin.initialize_app(cred)
     def subscribe(self, device_id: str):
