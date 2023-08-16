@@ -43,16 +43,13 @@ def register_token(request):
 def unsubscribe(request):
     username='admin'
     device_id = request.data.get('device_id')
-    user, created = User.objects.get_or_create(username=username)
-    
     if not device_id:
         return Response({"detail": "No device_id provided."}, status=status.HTTP_400_BAD_REQUEST)
+    user, created = User.objects.get_or_create(username=username)
     
     # Check if the user is authenticated and get the appropriate FCMToken_Testing instance
-    if request.user.is_authenticated:
-        model_instance = FCMToken_Testing.objects.get(user=user)
-    else:
-        return Response({"detail": "User not authenticated."}, status=status.HTTP_400_BAD_REQUEST)
+    model_instance = FCMToken_Testing.objects.get(user=user)
+    
     
     model_instance.unsubscribe(device_id, True)
 
@@ -64,11 +61,8 @@ def unsubscribe_all(request):
     username='admin'
     # Check if the user is authenticated and get the appropriate FCMToken_Testing instance
     user, created = User.objects.get_or_create(username=username)
+    model_instance = FCMToken_Testing.objects.get(user=user)
     
-    if request.user.is_authenticated:
-        model_instance = FCMToken_Testing.objects.get(user=user)
-    else:
-        return Response({"detail": "User not authenticated."}, status=status.HTTP_400_BAD_REQUEST)
     
     model_instance.unsubscribe_all(True)
 
